@@ -35,3 +35,34 @@ exports.signup = async (req, res, next) => {
     res.status(500).json({ error: "Erreur lors de la création de l'utilisateur", details: error.message });
   }
 };
+
+// Connexion de l'utilisateur (Login)
+exports.login = async (req, res, next) => {
+    const { email, password } = req.body;
+  
+    try {
+      // Vérifier si l'utilisateur existe
+      const user = await prisma.user.findUnique({ where: { email } });
+      if (!user) {
+        return res.status(400).json({ error: "Utilisateur non trouvé" });
+      }
+  
+      // Comparer le mot de passe
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid) {
+        return res.status(400).json({ error: "Mot de passe incorrect" });
+      }
+  
+      // Générer un token JWT
+      const token = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "1h" });
+  
+      // Répondre avec le token
+      res.status(200).json({
+        message: "Connexion réussie !",
+        token,
+      });
+    } catch (error) {
+      // Gérer les erreurs
+      res.status(500).json({ error: "Erreur lors de la connexion", details: error.message });
+    }
+  };
