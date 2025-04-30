@@ -1,14 +1,14 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 
-const { PrismaClient } = require('./generated/prisma');
-
+const stuffRoutes = require("./routes/stuff"); // Ensure path is correct
 
 const app = express();
-const prisma = new PrismaClient();
 
 app.use(express.json());
+app.use(bodyParser.json());
 
-// 👇 Your original custom CORS headers — unchanged
+// CORS headers
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -22,38 +22,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// ✅ POST /api/stuff → create a new Thing
-app.post("/api/stuff", async (req, res) => {
-  try {
-    const { title, description, imageUrl, price, userId } = req.body;
 
-    const newThing = await prisma.thing.create({
-      data: { title, description, imageUrl, price, userId },
-    });
-
-    res.status(201).json({
-      message: "Objet créé !",
-      thing: newThing,
-    });
-  } catch (error) {
-    res.status(500).json({ error: "Erreur lors de la création", details: error });
-  }
-});
-
-// ✅ GET /api/stuff → fetch all Things
-app.get("/api/stuff", async (req, res) => {
-  try {
-    const stuff = await prisma.thing.findMany();
-    res.status(200).json(stuff);
-  } catch (error) {
-    res.status(500).json({ error: "Erreur lors de la récupération", details: error });
-  }
-});
-
-// Optional: Close Prisma connection gracefully
-process.on("SIGINT", async () => {
-  await prisma.$disconnect();
-  process.exit(0);
-});
+app.use('/api/stuff', stuffRoutes);
 
 module.exports = app;
