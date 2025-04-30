@@ -2,11 +2,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 
 const stuffRoutes = require("./routes/stuff"); // Ensure path is correct
-
+const userRoutes = require("./routes/user");
 const app = express();
 
 app.use(express.json());
-app.use(bodyParser.json());
 
 // CORS headers
 app.use((req, res, next) => {
@@ -22,7 +21,8 @@ app.use((req, res, next) => {
   next();
 });
 
-
+app.use(bodyParser.json());
 app.use('/api/stuff', stuffRoutes);
+app.use('/api/user', userRoutes);
 
 module.exports = app;

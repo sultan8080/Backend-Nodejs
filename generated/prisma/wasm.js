@@ -129,6 +129,12 @@ exports.Prisma.ThingScalarFieldEnum = {
   price: 'price'
 };
 
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  password: 'password'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -141,7 +147,8 @@ exports.Prisma.QueryMode = {
 
 
 exports.Prisma.ModelName = {
-  Thing: 'Thing'
+  Thing: 'Thing',
+  User: 'User'
 };
 
 /**
