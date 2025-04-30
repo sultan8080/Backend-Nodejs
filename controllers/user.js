@@ -1,7 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { PrismaClient } = require("@prisma/client");
+const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
 const router = express.Router();
 
@@ -24,8 +24,7 @@ exports.signup = async (req, res, next) => {
       data: {
         email,
         password: hashedPassword,
-        name, // Assurez-vous que le nom est envoyé dans le corps de la requête
-      },
+    },
     });
 
     // Répondre avec un message de succès
